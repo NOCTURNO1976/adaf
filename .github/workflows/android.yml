@@ -11,16 +11,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Install build tools and platforms
         run: |
@@ -28,7 +28,7 @@ jobs:
           yes | sdkmanager --licenses
 
       # =========================
-      # DIAGNÓSTICO (temporário)
+      # DIAGNÓSTICO (mantido)
       # =========================
       - name: List res and manifest (diagnostic)
         run: |
@@ -43,12 +43,12 @@ jobs:
           cat gradle.properties | tail -n 5
       # =========================
 
-      # Provisiona Gradle 8.9 e gera wrapper (sem deprecations)
+      # Provisiona Gradle 8.9 e gera wrapper
       - name: Provision Gradle 8.9 and generate wrapper
         run: |
           set -e
           GRADLE_DIR="$RUNNER_TEMP/gradle-8.9"
-          curl -sLo "$RUNNER_TEMP/gradle.zip" https://services.gradle.org/distributions/gradle-8.9-bin.zip
+          curl -fLsS -o "$RUNNER_TEMP/gradle.zip" https://services.gradle.org/distributions/gradle-8.9-bin.zip
           unzip -q "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
           "$GRADLE_DIR/bin/gradle" wrapper --gradle-version 8.9 --distribution-type bin
           chmod +x gradlew
@@ -67,4 +67,3 @@ jobs:
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
-          
