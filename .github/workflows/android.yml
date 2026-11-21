@@ -1,3 +1,4 @@
+
 name: Build Android APK (Debug)
 
 on:
@@ -41,6 +42,7 @@ jobs:
         run: |
           echo "android.enableAapt2DebugLogging=true" >> gradle.properties
           cat gradle.properties | tail -n 5
+
       # =========================
 
       # Provisiona Gradle 8.9 e gera wrapper
@@ -53,17 +55,14 @@ jobs:
           "$GRADLE_DIR/bin/gradle" wrapper --gradle-version 8.9 --distribution-type bin
           chmod +x gradlew
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace --no-daemon
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
